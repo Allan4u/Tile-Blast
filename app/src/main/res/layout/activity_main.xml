@@ -18,8 +18,85 @@
             android:layout_width="220dp"
             android:layout_height="220dp"
             android:layout_marginTop="40dp"
-            android:layout_marginBottom="40dp"
+            android:layout_marginBottom="16dp"
             android:scaleType="fitCenter" />
+
+        <!-- Level + prestige row -->
+        <LinearLayout
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="6dp">
+
+            <TextView
+                android:id="@+id/levelText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Level 1"
+                android:textColor="#FFFFD700"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/prestigeStars"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="#FFFFD700"
+                android:textSize="16sp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <!-- XP progress bar -->
+        <ProgressBar
+            android:id="@+id/xpProgress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="280dp"
+            android:layout_height="14dp"
+            android:layout_marginBottom="4dp"
+            android:max="100"
+            android:progress="0" />
+
+        <TextView
+            android:id="@+id/xpText"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:text="0 / 100 XP"
+            android:textColor="#FFAAAAAA"
+            android:textSize="12sp"
+            android:gravity="end"
+            android:layout_marginBottom="20dp" />
+
+        <!-- Prestige Button (only visible at level 100) -->
+        <LinearLayout
+            android:id="@+id/btnPrestige"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/btn_chaos"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone">
+            <TextView
+                android:id="@+id/btnPrestigeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PRESTIGE"
+                android:textColor="#FFFFD700"
+                android:textSize="20sp" />
+            <TextView
+                android:id="@+id/btnPrestigeDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reset Level • +10% XP Bonus"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
 
         <!-- Classic Mode Button -->
         <LinearLayout
@@ -79,6 +156,93 @@
                 android:layout_marginTop="4dp" />
         </LinearLayout>
 
+        <!-- Timed 60s Mode Button -->
+        <LinearLayout
+            android:id="@+id/btnTimed60"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/btn_timed"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            android:focusable="true">
+            <TextView
+                android:id="@+id/btnTimed60Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Timed 60s"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp" />
+            <TextView
+                android:id="@+id/btnTimed60Desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="8x8 Grid - 60 Seconds"
+                android:textColor="#BBBBBB"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
+
+        <!-- Timed 90s Mode Button -->
+        <LinearLayout
+            android:id="@+id/btnTimed90"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/btn_timed"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            android:focusable="true">
+            <TextView
+                android:id="@+id/btnTimed90Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Timed 90s"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp" />
+            <TextView
+                android:id="@+id/btnTimed90Desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="8x8 Grid - 90 Seconds"
+                android:textColor="#BBBBBB"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
+
+        <!-- Daily Challenge Button -->
+        <LinearLayout
+            android:id="@+id/btnDaily"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/btn_daily"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            android:focusable="true">
+            <TextView
+                android:id="@+id/btnDailyText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Daily Challenge"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp" />
+            <TextView
+                android:id="@+id/btnDailyDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="8×8 Grid • Target: 2000"
+                android:textColor="#FFE0B2"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
+
         <!-- High Scores Button -->
         <LinearLayout
             android:id="@+id/btnHighScores"
@@ -96,6 +260,98 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="High Scores"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+        <!-- Statistics Button -->
+        <LinearLayout
+            android:id="@+id/btnStatistics"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/btn_statistics"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            android:focusable="true">
+            <TextView
+                android:id="@+id/btnStatisticsText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Statistics"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+        <!-- Achievements Button -->
+        <LinearLayout
+            android:id="@+id/btnAchievements"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/btn_achievements"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            android:focusable="true">
+            <TextView
+                android:id="@+id/btnAchievementsText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Achievements"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+        <!-- Leaderboard Button -->
+        <LinearLayout
+            android:id="@+id/btnLeaderboard"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/btn_classic"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            android:focusable="true">
+            <TextView
+                android:id="@+id/btnLeaderboardText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Leaderboard"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp" />
+            <TextView
+                android:id="@+id/btnLeaderboardRank"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Unranked"
+                android:textColor="#FFFFD700"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
+
+        <!-- Settings Button -->
+        <LinearLayout
+            android:id="@+id/btnSettings"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/btn_settings"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            android:focusable="true">
+            <TextView
+                android:id="@+id/btnSettingsText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Settings"
                 android:textColor="#FFFFFF"
                 android:textSize="20sp" />
         </LinearLayout>

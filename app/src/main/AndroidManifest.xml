@@ -27,5 +27,31 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".DailyChallengeActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".LeaderboardActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme.Material"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".StatisticsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".AchievementActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize" />
     </application>
 </manifest>

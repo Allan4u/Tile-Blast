@@ -1,18 +1,33 @@
 package com.allan.tileblast.game;
 
+import java.util.Random;
+
 public class Hand {
     private Piece[] pieces;
     private int size;
+    private Random random;
 
     public Hand(int size) {
+        this(size, null);
+    }
+
+    /**
+     * Creates a hand seeded with the provided {@link Random}. When non-null,
+     * the seeded RNG is used for piece generation, producing deterministic
+     * sequences across devices for the same seed.
+     */
+    public Hand(int size, Random random) {
         this.size = size;
-        pieces = new Piece[size];
+        this.random = random;
+        this.pieces = new Piece[size];
         refill();
     }
 
     public void refill() {
         for (int i = 0; i < size; i++) {
-            pieces[i] = Piece.getRandomPiece();
+            pieces[i] = (random != null)
+                    ? Piece.getRandomPiece(random)
+                    : Piece.getRandomPiece();
         }
     }
 

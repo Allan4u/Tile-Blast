@@ -6,17 +6,23 @@ public class Board {
     public static final int HOVERED = 2;
     public static final int HOVERED_BREAK_FILLED = 3;
     public static final int HOVERED_BREAK_EMPTY = 4;
+    public static final int FROZEN = 5;
+    public static final int FROZEN_CRACKED = 6;
+    public static final int LOCKED = 7;
+    public static final int BOMB_TILE = 8;
 
     private int size;
     private int[][] cells;       // cell state
     private int[][] colors;      // color index per cell
     private int[][] hoverColors; // hover break color index
+    private int[][] bombCountdowns; // valid only where cells[y][x] == BOMB_TILE
 
     public Board(int size) {
         this.size = size;
         cells = new int[size][size];
         colors = new int[size][size];
         hoverColors = new int[size][size];
+        bombCountdowns = new int[size][size];
         // Initialize with random colors for empty cells
         for (int y = 0; y < size; y++)
             for (int x = 0; x < size; x++)
@@ -33,6 +39,40 @@ public class Board {
         colors[y][x] = colorIdx;
     }
 
+    /** Returns true for any of the four special-tile states. */
+    public static boolean isSpecial(int cellState) {
+        return cellState == FROZEN
+                || cellState == FROZEN_CRACKED
+                || cellState == LOCKED
+                || cellState == BOMB_TILE;
+    }
+
+    /** Returns true when the given cell-state counts as filled for line-completion checks. */
+    public static boolean isLineFillable(int cellState) {
+        return cellState == FILLED
+                || cellState == FROZEN
+                || cellState == FROZEN_CRACKED
+                || cellState == LOCKED
+                || cellState == BOMB_TILE;
+    }
+
+    public int getBombCountdown(int x, int y) { return bombCountdowns[y][x]; }
+    public void setBombCountdown(int x, int y, int value) { bombCountdowns[y][x] = value; }
+
+    /**
+     * Set a special-tile state at (x, y), preserving the existing color.
+     * For BOMB_TILE the countdown is initialized to {@code initialCountdown};
+     * for any other special state the countdown slot is cleared to 0.
+     */
+    public void setSpecial(int x, int y, int specialState, int initialCountdown) {
+        cells[y][x] = specialState;
+        if (specialState == BOMB_TILE) {
+            bombCountdowns[y][x] = initialCountdown;
+        } else {
+            bombCountdowns[y][x] = 0;
+        }
+    }
+
     // Check if a piece can be placed at (px, py)
     public boolean canPlace(Piece piece, int px, int py) {
         for (int dy = 0; dy < piece.getRows(); dy++) {
@@ -40,7 +80,8 @@ public class Board {
                 if (piece.matrix[dy][dx] == 1) {
                     int bx = px + dx, by = py + dy;
                     if (bx < 0 || bx >= size || by < 0 || by >= size) return false;
-                    if (cells[by][bx] == FILLED) return false;
+                    int s = cells[by][bx];
+                    if (s == FILLED || isSpecial(s)) return false;
                 }
             }
         }
@@ -85,14 +126,16 @@ public class Board {
         for (int r = 0; r < size; r++) {
             boolean full = true;
             for (int c = 0; c < size; c++) {
-                if (cells[r][c] != FILLED && cells[r][c] != HOVERED) { full = false; break; }
+                int s = cells[r][c];
+                if (!(isLineFillable(s) || s == HOVERED)) { full = false; break; }
             }
             rowFull[r] = full;
         }
         for (int c = 0; c < size; c++) {
             boolean full = true;
             for (int r = 0; r < size; r++) {
-                if (cells[r][c] != FILLED && cells[r][c] != HOVERED) { full = false; break; }
+                int s = cells[r][c];
+                if (!(isLineFillable(s) || s == HOVERED)) { full = false; break; }
             }
             colFull[c] = full;
         }
@@ -134,31 +177,53 @@ public class Board {
         for (int r = 0; r < size; r++) {
             boolean full = true;
             for (int c = 0; c < size; c++) {
-                if (cells[r][c] != FILLED) { full = false; break; }
+                if (!isLineFillable(cells[r][c])) { full = false; break; }
             }
             if (full) { rowFull[r] = true; count++; }
         }
         for (int c = 0; c < size; c++) {
             boolean full = true;
             for (int r = 0; r < size; r++) {
-                if (cells[r][c] != FILLED) { full = false; break; }
+                if (!isLineFillable(cells[r][c])) { full = false; break; }
             }
             if (full) { colFull[c] = true; count++; }
         }
 
-        // Clear lines
+        // Apply per-cell transition for cells in cleared rows/columns
         for (int r = 0; r < size; r++) {
-            if (rowFull[r]) {
-                for (int c = 0; c < size; c++) cells[r][c] = EMPTY;
-            }
-        }
-        for (int c = 0; c < size; c++) {
-            if (colFull[c]) {
-                for (int r = 0; r < size; r++) cells[r][c] = EMPTY;
+            for (int c = 0; c < size; c++) {
+                if (rowFull[r] || colFull[c]) {
+                    applyBreakTransition(c, r);
+                }
             }
         }
 
         return count;
+    }
+
+    private void applyBreakTransition(int x, int y) {
+        int s = cells[y][x];
+        switch (s) {
+            case FILLED:
+                cells[y][x] = EMPTY;
+                break;
+            case FROZEN:
+                cells[y][x] = FROZEN_CRACKED;
+                break;
+            case FROZEN_CRACKED:
+                cells[y][x] = EMPTY;
+                break;
+            case LOCKED:
+                cells[y][x] = EMPTY;
+                break;
+            case BOMB_TILE:
+                cells[y][x] = EMPTY;
+                bombCountdowns[y][x] = 0;
+                break;
+            default:
+                // EMPTY/HOVER states: no change
+                break;
+        }
     }
 
     // Check if any piece from hand can be placed
@@ -172,6 +237,14 @@ public class Board {
             }
         }
         return false;
+    }
+
+    // Check if the board is completely empty (perfect clear)
+    public boolean isEmpty() {
+        for (int y = 0; y < size; y++)
+            for (int x = 0; x < size; x++)
+                if (cells[y][x] == FILLED) return false;
+        return true;
     }
 
     // Get valid drop spots for a piece (for optimization)

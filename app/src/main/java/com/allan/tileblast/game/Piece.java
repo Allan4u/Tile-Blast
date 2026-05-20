@@ -1,6 +1,12 @@
 package com.allan.tileblast.game;
 
+import android.content.Context;
 import android.graphics.Color;
+
+import com.allan.tileblast.AppContext;
+import com.allan.tileblast.theme.ColorPalette;
+import com.allan.tileblast.theme.ThemeManager;
+
 import java.util.Random;
 
 public class Piece {
@@ -55,15 +61,26 @@ public class Piece {
         2f, 2f,                              // 2x1, 1x2
     };
 
-    // 6 piece colors (RGB)
-    public static final int[][] COLORS = {
-        {227, 143, 16},   // Orange
-        {186, 19, 38},    // Crimson
-        {16, 158, 40},    // Green
-        {20, 56, 184},    // Blue
-        {101, 19, 148},   // Purple
-        {31, 165, 222},   // Cyan
-    };
+    /**
+     * Returns the active palette's 6 RGB triplets. Resolves through the
+     * {@link ThemeManager} singleton so callers always see the currently
+     * selected palette without having to thread a Context.
+     *
+     * Falls back to {@link ColorPalette#DEFAULT}'s colors if the AppContext
+     * has not been initialized yet (e.g. unit tests, edge cases during
+     * startup).
+     */
+    public static int[][] getColors() {
+        Context ctx = AppContext.get();
+        if (ctx == null) {
+            return ColorPalette.DEFAULT.getColors();
+        }
+        try {
+            return ThemeManager.getInstance(ctx).getActivePalette().getColors();
+        } catch (Throwable t) {
+            return ColorPalette.DEFAULT.getColors();
+        }
+    }
 
     private static final Random random = new Random();
     private static float totalDistribution = 0f;
@@ -94,17 +111,17 @@ public class Piece {
     }
 
     public int getColor() {
-        int[] c = COLORS[colorIndex];
+        int[] c = getColors()[colorIndex];
         return Color.rgb(c[0], c[1], c[2]);
     }
 
     public int[] getColorRGB() {
-        return COLORS[colorIndex];
+        return getColors()[colorIndex];
     }
 
     // Beveled border colors (3D effect)
     public int getTopBorderColor() {
-        int[] c = COLORS[colorIndex];
+        int[] c = getColors()[colorIndex];
         return Color.rgb(
             clamp((int)(c[0] * 214f/131f)),
             clamp((int)(c[1] * 167f/83f)),
@@ -113,7 +130,7 @@ public class Piece {
     }
 
     public int getLeftBorderColor() {
-        int[] c = COLORS[colorIndex];
+        int[] c = getColors()[colorIndex];
         return Color.rgb(
             clamp((int)(c[0] * 164f/131f)),
             clamp((int)(c[1] * 119f/83f)),
@@ -122,7 +139,7 @@ public class Piece {
     }
 
     public int getRightBorderColor() {
-        int[] c = COLORS[colorIndex];
+        int[] c = getColors()[colorIndex];
         return Color.rgb(
             clamp((int)(c[0] * 123f/131f)),
             clamp((int)(c[1] * 69f/83f)),
@@ -131,7 +148,7 @@ public class Piece {
     }
 
     public int getBottomBorderColor() {
-        int[] c = COLORS[colorIndex];
+        int[] c = getColors()[colorIndex];
         return Color.rgb(
             clamp((int)(c[0] * 92f/131f)),
             clamp((int)(c[1] * 43f/83f)),
@@ -141,24 +158,24 @@ public class Piece {
 
     // Static border color methods for arbitrary color index
     public static int getTopBorder(int colorIdx) {
-        int[] c = COLORS[colorIdx];
+        int[] c = getColors()[colorIdx];
         return Color.rgb(clamp((int)(c[0]*214f/131f)), clamp((int)(c[1]*167f/83f)), clamp((int)(c[2]*247f/203f)));
     }
     public static int getLeftBorder(int colorIdx) {
-        int[] c = COLORS[colorIdx];
+        int[] c = getColors()[colorIdx];
         return Color.rgb(clamp((int)(c[0]*164f/131f)), clamp((int)(c[1]*119f/83f)), clamp((int)(c[2]*224f/203f)));
     }
     public static int getRightBorder(int colorIdx) {
-        int[] c = COLORS[colorIdx];
+        int[] c = getColors()[colorIdx];
         return Color.rgb(clamp((int)(c[0]*123f/131f)), clamp((int)(c[1]*69f/83f)), clamp((int)(c[2]*153f/203f)));
     }
     public static int getBottomBorder(int colorIdx) {
-        int[] c = COLORS[colorIdx];
+        int[] c = getColors()[colorIdx];
         return Color.rgb(clamp((int)(c[0]*92f/131f)), clamp((int)(c[1]*43f/83f)), clamp((int)(c[2]*132f/203f)));
     }
 
     public static int getColorFromIndex(int colorIdx) {
-        int[] c = COLORS[colorIdx];
+        int[] c = getColors()[colorIdx];
         return Color.rgb(c[0], c[1], c[2]);
     }
 
@@ -171,10 +188,25 @@ public class Piece {
             pos -= DISTRIBUTION[i];
             if (pos < 0) { idx = i; break; }
         }
-        return new Piece(idx, random.nextInt(COLORS.length));
+        return new Piece(idx, random.nextInt(6));
+    }
+
+    /**
+     * Generates a random piece using the provided {@link Random} instance.
+     * Used for deterministic modes (e.g. Daily Challenge) where a seeded
+     * Random must drive piece selection.
+     */
+    public static Piece getRandomPiece(Random rng) {
+        float pos = rng.nextFloat() * totalDistribution;
+        int idx = 0;
+        for (int i = 0; i < DISTRIBUTION.length; i++) {
+            pos -= DISTRIBUTION[i];
+            if (pos < 0) { idx = i; break; }
+        }
+        return new Piece(idx, rng.nextInt(6));
     }
 
     public static int getRandomColorIndex() {
-        return random.nextInt(COLORS.length);
+        return random.nextInt(6);
     }
 }

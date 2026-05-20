@@ -16,19 +16,47 @@ gen/
 out/
 release/
 
-# Gradle files
+# Android Studio / Gradle
 .gradle/
 build/
 app/build/
+app/release/
+captures/
 
 # Local configuration file
 local.properties
 
-# Android Studio
+# Sensitive — Firebase
+firebase/
+app/google-services.json
+google-services.json
+
+# Sensitive — Signing & secrets
+*.jks
+*.keystore
+keystore.properties
+secrets.properties
+*.p12
+*.p8
+
+# Android Studio / IntelliJ
 *.iml
 .idea/
-.DS_Store
 
 # OS files
-Thumbs.db
 .DS_Store
+Thumbs.db
+
+# Editor
+*.swp
+*~
+.vscode/
+*.bak
+
+# Python build artifacts (dari script docs)
+docs/__pycache__/
+*.pyc
+
+# Don't commit large generated docs binaries
+docs/*.pptx
+docs/*.pdf

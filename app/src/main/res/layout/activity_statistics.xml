@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FF000000"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="24dp">
+
+        <TextView
+            android:id="@+id/statsTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="STATISTICS"
+            android:textColor="#FFFFD700"
+            android:textSize="32sp"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp" />
+
+        <!-- Games Played -->
+        <TextView
+            android:id="@+id/sectionGames"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="— Games Played —"
+            android:textColor="#FF6A1B9A"
+            android:textSize="20sp"
+            android:layout_marginBottom="10dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:layout_marginBottom="24dp">
+
+            <TextView android:id="@+id/statClassicGames"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FFCCCCCC"
+                android:textSize="14sp"
+                android:padding="6dp" />
+
+            <TextView android:id="@+id/statChaosGames"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FFCCCCCC"
+                android:textSize="14sp"
+                android:padding="6dp" />
+
+            <TextView android:id="@+id/statTimedGames"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FFCCCCCC"
+                android:textSize="14sp"
+                android:padding="6dp" />
+
+            <TextView android:id="@+id/statTotalGames"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFD700"
+                android:textSize="14sp"
+                android:padding="6dp" />
+        </LinearLayout>
+
+        <!-- Average Score -->
+        <TextView
+            android:id="@+id/sectionAverage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="— Average Score —"
+            android:textColor="#FFB71C1C"
+            android:textSize="20sp"
+            android:layout_marginBottom="10dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:layout_marginBottom="24dp">
+
+            <TextView android:id="@+id/statClassicAvg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FFCCCCCC"
+                android:textSize="14sp"
+                android:padding="6dp" />
+
+            <TextView android:id="@+id/statChaosAvg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FFCCCCCC"
+                android:textSize="14sp"
+                android:padding="6dp" />
+
+            <TextView android:id="@+id/statTimedAvg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FFCCCCCC"
+                android:textSize="14sp"
+                android:padding="6dp" />
+        </LinearLayout>
+
+        <!-- Best Combo -->
+        <TextView
+            android:id="@+id/sectionCombo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="— Best Combo —"
+            android:textColor="#FF1565C0"
+            android:textSize="20sp"
+            android:layout_marginBottom="10dp" />
+
+        <TextView android:id="@+id/statBestCombo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#FFCCCCCC"
+            android:textSize="14sp"
+            android:paddingHorizontal="16dp"
+            android:padding="6dp"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Total Lines -->
+        <TextView
+            android:id="@+id/sectionLines"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="— Lines Cleared —"
+            android:textColor="#FF2E7D32"
+            android:textSize="20sp"
+            android:layout_marginBottom="10dp" />
+
+        <TextView android:id="@+id/statTotalLines"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#FFCCCCCC"
+            android:textSize="14sp"
+            android:paddingHorizontal="16dp"
+            android:padding="6dp"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Play Time -->
+        <TextView
+            android:id="@+id/sectionPlaytime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="— Play Time —"
+            android:textColor="#FFFFD700"
+            android:textSize="20sp"
+            android:layout_marginBottom="10dp" />
+
+        <TextView android:id="@+id/statPlayTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#FFCCCCCC"
+            android:textSize="14sp"
+            android:paddingHorizontal="16dp"
+            android:padding="6dp"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Win Streaks -->
+        <TextView
+            android:id="@+id/sectionStreak"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="— Win Streaks —"
+            android:textColor="#FFE38F10"
+            android:textSize="20sp"
+            android:layout_marginBottom="10dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:layout_marginBottom="30dp">
+
+            <TextView android:id="@+id/statStreakCurrent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FFCCCCCC"
+                android:textSize="14sp"
+                android:padding="6dp" />
+
+            <TextView android:id="@+id/statStreakBest"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFD700"
+                android:textSize="14sp"
+                android:padding="6dp" />
+        </LinearLayout>
+
+        <!-- Back button -->
+        <LinearLayout
+            android:id="@+id/btnBack"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:background="@drawable/btn_chaos"
+            android:padding="14dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginBottom="30dp">
+            <TextView
+                android:id="@+id/btnBackText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Back"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

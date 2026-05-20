@@ -10,20 +10,32 @@ public class ScoreManager {
         this.boardSize = boardSize;
     }
 
-    // Called when a piece is placed
+    // Called when a piece is placed (multiplier defaults to 1.0)
     public int addPlacement(int blockCount) {
-        score += blockCount;
-        return blockCount;
+        return addPlacement(blockCount, 1.0f);
     }
 
-    // Called after line break check
+    // Multiplier-aware placement scoring (Timed Mode)
+    public int addPlacement(int blockCount, float multiplier) {
+        int delta = Math.round(blockCount * multiplier);
+        score += delta;
+        return delta;
+    }
+
+    // Called after line break check (multiplier defaults to 1.0)
     // Returns: combo level if lines were broken, 0 if not
     public int processLineBreak(int linesBroken) {
+        return processLineBreak(linesBroken, 1.0f);
+    }
+
+    // Multiplier-aware line-break scoring (Timed Mode)
+    public int processLineBreak(int linesBroken, float multiplier) {
         if (linesBroken > 0) {
             turnsSinceBreak = 0;
             combo += linesBroken;
-            int lineBonus = Math.round(linesBroken * boardSize * 10f * combo);
-            score += lineBonus;
+            int rawBonus = Math.round(linesBroken * boardSize * 10f * combo);
+            int delta = Math.round(rawBonus * multiplier);
+            score += delta;
             return combo;
         } else {
             turnsSinceBreak++;
@@ -32,6 +44,21 @@ public class ScoreManager {
             }
             return 0;
         }
+    }
+
+    // Award perfect clear bonus of 500 points
+    public void addPerfectClearBonus() {
+        score += 500;
+    }
+
+    // Add an arbitrary score amount (used by power-up effects like Bomb)
+    public void addScore(int amount) {
+        score += amount;
+    }
+
+    // Add an end-of-round bonus (e.g., Timed Mode time-remaining bonus)
+    public void addBonus(int bonus) {
+        if (bonus > 0) score += bonus;
     }
 
     public int getScore() { return score; }

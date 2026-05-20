@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FF000000"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Title bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_marginBottom="12dp"
+        android:layout_marginTop="20dp">
+
+        <TextView
+            android:id="@+id/lbTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="LEADERBOARD"
+            android:textColor="#FFFFD700"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/lbBackBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BACK"
+            android:textColor="#FFFFFFFF"
+            android:textSize="16sp"
+            android:padding="12dp"
+            android:background="@drawable/btn_chaos"
+            android:clickable="true"
+            android:focusable="true" />
+    </LinearLayout>
+
+    <!-- Auth status / sign-in button row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="12dp">
+
+        <TextView
+            android:id="@+id/lbAuthStatus"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text=""
+            android:textColor="#FFFFFFFF"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/lbAuthBtn"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sign in with Google" />
+    </LinearLayout>
+
+    <!-- Mode tabs -->
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/lbTabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FF111111"
+        app:tabMode="scrollable"
+        app:tabIndicatorColor="#FFFFD700"
+        app:tabSelectedTextColor="#FFFFD700"
+        app:tabTextColor="#FFCCCCCC" />
+
+    <!-- All-time / Weekly toggle -->
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/lbToggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:layout_gravity="center"
+        app:singleSelection="true"
+        app:selectionRequired="true">
+
+        <Button
+            android:id="@+id/lbToggleAllTime"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="All-Time" />
+
+        <Button
+            android:id="@+id/lbToggleWeekly"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Weekly" />
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+    <!-- Header row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="RANK"
+            android:textColor="#FF888888"
+            android:textSize="12sp" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:text="PLAYER"
+            android:textColor="#FF888888"
+            android:textSize="12sp" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="SCORE"
+            android:textColor="#FF888888"
+            android:textSize="12sp"
+            android:gravity="end" />
+    </LinearLayout>
+
+    <!-- Leaderboard list -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/lbList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbars="vertical" />
+
+    <!-- Empty state -->
+    <TextView
+        android:id="@+id/lbEmpty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="No scores yet"
+        android:textColor="#FF888888"
+        android:textSize="14sp"
+        android:visibility="gone" />
+
+</LinearLayout>

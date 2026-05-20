@@ -33,13 +33,21 @@ public class HighScoreActivity extends AppCompatActivity {
         classicLabel.setTypeface(fontBold);
         TextView chaosLabel = findViewById(R.id.chaosLabel);
         chaosLabel.setTypeface(fontBold);
+        TextView timed60Label = findViewById(R.id.timed60Label);
+        timed60Label.setTypeface(fontBold);
+        TextView timed90Label = findViewById(R.id.timed90Label);
+        timed90Label.setTypeface(fontBold);
 
         LinearLayout classicList = findViewById(R.id.classicList);
         LinearLayout chaosList = findViewById(R.id.chaosList);
+        LinearLayout timed60List = findViewById(R.id.timed60List);
+        LinearLayout timed90List = findViewById(R.id.timed90List);
 
         StorageManager storage = new StorageManager(this);
         populateScores(classicList, storage.getHighScores("classic", 10), fontReg);
         populateScores(chaosList, storage.getHighScores("chaos", 10), fontReg);
+        populateScores(timed60List, storage.getHighScores("timed60", 10), fontReg);
+        populateScores(timed90List, storage.getHighScores("timed90", 10), fontReg);
 
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
         ((TextView) findViewById(R.id.btnBackText)).setTypeface(fontBold);

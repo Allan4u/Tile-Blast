@@ -58,6 +58,42 @@
             android:paddingHorizontal="16dp"
             android:layout_marginBottom="30dp" />
 
+        <!-- Timed 60s Scores -->
+        <TextView
+            android:id="@+id/timed60Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="— Timed 60s —"
+            android:textColor="#FF00BFA5"
+            android:textSize="20sp"
+            android:layout_marginBottom="10dp" />
+
+        <LinearLayout
+            android:id="@+id/timed60List"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:layout_marginBottom="30dp" />
+
+        <!-- Timed 90s Scores -->
+        <TextView
+            android:id="@+id/timed90Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="— Timed 90s —"
+            android:textColor="#FF00BFA5"
+            android:textSize="20sp"
+            android:layout_marginBottom="10dp" />
+
+        <LinearLayout
+            android:id="@+id/timed90List"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:layout_marginBottom="30dp" />
+
         <!-- Back button -->
         <LinearLayout
             android:id="@+id/btnBack"
