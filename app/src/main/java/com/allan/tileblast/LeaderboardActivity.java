@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -73,6 +75,7 @@ public class LeaderboardActivity extends AppCompatActivity {
         tabs = findViewById(R.id.lbTabs);
         toggle = findViewById(R.id.lbToggle);
         authStatus = findViewById(R.id.lbAuthStatus);
+        authStatus.setOnClickListener(v -> showEditNameDialog());
         authBtn = findViewById(R.id.lbAuthBtn);
 
         // RecyclerView setup
@@ -171,12 +174,38 @@ public class LeaderboardActivity extends AppCompatActivity {
         String name = auth.getDisplayName();
         if (name == null) name = "";
         if (auth.isAnonymous()) {
-            authStatus.setText("Anonymous: " + name);
+            authStatus.setText("Anonymous: " + name + " (tap to edit)");
             authBtn.setText("Sign in with Google");
         } else {
-            authStatus.setText("Signed in as " + name);
+            authStatus.setText("Signed in as " + name + " (tap to edit)");
             authBtn.setText("Sign out");
         }
+    }
+
+    private void showEditNameDialog() {
+        final EditText input = new EditText(this);
+        input.setText(auth.getDisplayName() == null ? "" : auth.getDisplayName());
+        input.setSelectAllOnFocus(true);
+        int pad = (int)(16 * getResources().getDisplayMetrics().density);
+        FrameLayout container = new FrameLayout(this);
+        container.setPadding(pad, pad/2, pad, 0);
+        container.addView(input);
+
+        new AlertDialog.Builder(this)
+                .setTitle("Ganti Username")
+                .setMessage("3-20 karakter")
+                .setView(container)
+                .setPositiveButton("Simpan", (dialog, which) -> {
+                    String newName = input.getText().toString();
+                    if (auth.updateDisplayName(newName)) {
+                        updateAuthUi();
+                        Toast.makeText(this, "Username diubah", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, "Username harus 3-20 karakter", Toast.LENGTH_LONG).show();
+                    }
+                })
+                .setNegativeButton("Batal", null)
+                .show();
     }
 
     private void onAuthButtonClicked() {
@@ -230,8 +259,19 @@ public class LeaderboardActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(String errorMessage) {
-                    runOnUiThread(() -> Toast.makeText(LeaderboardActivity.this,
-                            errorMessage, Toast.LENGTH_LONG).show());
+                    runOnUiThread(() -> {
+                        String hint = errorMessage;
+                        if (errorMessage != null && errorMessage.contains("code 10")) {
+                            hint = "Sign-in gagal (code 10): SHA-1 fingerprint belum "
+                                    + "didaftarkan di Firebase Console. "
+                                    + "Lihat firebase/GOOGLE_SIGNIN_FIX.md.";
+                        } else if (errorMessage != null && errorMessage.contains("code 12500")) {
+                            hint = "Sign-in gagal (code 12500): Google provider "
+                                    + "belum di-enable di Firebase Console.";
+                        }
+                        Toast.makeText(LeaderboardActivity.this,
+                                hint, Toast.LENGTH_LONG).show();
+                    });
                 }
             });
         }

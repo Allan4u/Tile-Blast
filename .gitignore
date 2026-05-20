@@ -60,3 +60,8 @@ docs/__pycache__/
 # Don't commit large generated docs binaries
 docs/*.pptx
 docs/*.pdf
+
+
+# Firebase Admin service account
+firebase/service-account.json
+firebase/*-firebase-adminsdk-*.json

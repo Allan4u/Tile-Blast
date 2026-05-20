@@ -51,6 +51,7 @@ public class LeaderboardService {
     private static final String KEY_LAST_SUBMISSION = "last_submission_ms";
     private static final String KEY_CACHED_RANK_PREFIX = "cached_rank_";
     private static final String KEY_LAST_VIEWED_MODE = "last_viewed_mode";
+    private static final String KEY_LB_PB_PREFIX = "lb_pb_";
 
     @SuppressWarnings("StaticFieldLeak")
     private static LeaderboardService instance;
@@ -102,13 +103,20 @@ public class LeaderboardService {
 
     /**
      * @return true iff the score is strictly greater than the player's existing
-     *         best for the given mode (per Requirements 4.1–4.3).
+     *         leaderboard personal best for the given mode (per Requirements 4.1–4.3).
+     *         Tracked separately from the local high score so that submission
+     *         decisions are independent of local high-score persistence ordering.
      */
     public boolean shouldSubmitScore(int score, String mode) {
         if (!isValidMode(mode)) return false;
         if (!isValidScore(score)) return false;
-        int currentBest = storageManager.getBestScore(mode);
+        int currentBest = prefs.getInt(KEY_LB_PB_PREFIX + mode, 0);
         return score > currentBest;
+    }
+
+    /** Returns the leaderboard-tracked personal best for the given mode (0 if none). */
+    public int getLeaderboardPersonalBest(String mode) {
+        return prefs.getInt(KEY_LB_PB_PREFIX + mode, 0);
     }
 
     /**
@@ -191,6 +199,8 @@ public class LeaderboardService {
                 .set(doc)
                 .addOnSuccessListener(aVoid -> {
                     Log.d(TAG, "Score submitted: " + score + " (" + mode + ")");
+                    // Update leaderboard personal-best gate now that the write succeeded.
+                    prefs.edit().putInt(KEY_LB_PB_PREFIX + mode, score).apply();
                     // Best-effort: update player document with last submission for rate-limit tracking
                     Map<String, Object> playerDoc = new LinkedHashMap<>();
                     playerDoc.put("displayName", doc.get("displayName"));

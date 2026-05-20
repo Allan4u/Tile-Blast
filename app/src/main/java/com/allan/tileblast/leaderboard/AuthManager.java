@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 import java.util.Random;
 
@@ -310,4 +311,26 @@ public class AuthManager {
     public boolean isAnonymous() { return isAnonymous; }
     @Nullable public String getUserId() { return userId; }
     @Nullable public String getDisplayName() { return displayName; }
+
+    /**
+     * Update display name pemain. Persist ke SharedPreferences. Best-effort
+     * juga update Firebase profile bila user signed in.
+     * @return true bila valid (3-20 chars setelah trim).
+     */
+    public boolean updateDisplayName(String newName) {
+        if (newName == null) return false;
+        String trimmed = newName.trim();
+        if (trimmed.length() < 3 || trimmed.length() > 20) return false;
+
+        this.displayName = trimmed;
+        persistAuthState();
+
+        FirebaseUser current = firebaseAuth.getCurrentUser();
+        if (current != null) {
+            UserProfileChangeRequest req = new UserProfileChangeRequest.Builder()
+                    .setDisplayName(trimmed).build();
+            current.updateProfile(req);
+        }
+        return true;
+    }
 }
