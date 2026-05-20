@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Tile Blast</string>
+    <string name="classic_mode">Classic Mode</string>
+    <string name="chaos_mode">Chaos Mode</string>
+    <string name="high_scores">High Scores</string>
+    <string name="options">Options</string>
+    <string name="classic_desc">8×8 Grid • 3 Pieces</string>
+    <string name="chaos_desc">10×10 Grid • 5 Pieces</string>
+    <string name="paused">PAUSED</string>
+    <string name="resume">Resume</string>
+    <string name="quit">Quit</string>
+    <string name="game_over">GAME OVER</string>
+    <string name="back_to_menu">Back to Menu</string>
+    <string name="volume">Volume</string>
+    <string name="score_label">Score</string>
+    <string name="combo_label">Combo</string>
+    <string name="best_label">Best</string>
+    <string name="no_scores">No scores yet</string>
+</resources>

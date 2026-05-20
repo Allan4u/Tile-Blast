@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FF000000"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="24dp">
+
+        <!-- Logo -->
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="220dp"
+            android:layout_height="220dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="40dp"
+            android:scaleType="fitCenter" />
+
+        <!-- Classic Mode Button -->
+        <LinearLayout
+            android:id="@+id/btnClassic"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/btn_classic"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            android:focusable="true">
+            <TextView
+                android:id="@+id/btnClassicText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Classic Mode"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp" />
+            <TextView
+                android:id="@+id/btnClassicDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="8×8 Grid • 3 Pieces"
+                android:textColor="#BBBBBB"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
+
+        <!-- Chaos Mode Button -->
+        <LinearLayout
+            android:id="@+id/btnChaos"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/btn_chaos"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            android:focusable="true">
+            <TextView
+                android:id="@+id/btnChaosText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chaos Mode"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp" />
+            <TextView
+                android:id="@+id/btnChaosDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10×10 Grid • 5 Pieces"
+                android:textColor="#BBBBBB"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
+
+        <!-- High Scores Button -->
+        <LinearLayout
+            android:id="@+id/btnHighScores"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/btn_scores"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            android:focusable="true">
+            <TextView
+                android:id="@+id/btnHighScoresText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="High Scores"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

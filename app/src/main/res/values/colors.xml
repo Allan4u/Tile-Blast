@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="bg_dark">#FF0A0A0A</color>
+    <color name="grid_border">#FFFFFFFF</color>
+    <color name="grid_bg">#FF000000</color>
+    <color name="hud_bg">#66000000</color>
+    <color name="combo_bg">#33FFD700</color>
+    <color name="combo_border">#FFFFD700</color>
+    <color name="btn_classic">#FF6A1B9A</color>
+    <color name="btn_chaos">#FFB71C1C</color>
+    <color name="btn_scores">#FF1565C0</color>
+    <color name="btn_options">#FF2E7D32</color>
+    <color name="pause_overlay">#B3000000</color>
+    <color name="piece_orange">#FFE38F10</color>
+    <color name="piece_red">#FFBA1326</color>
+    <color name="piece_green">#FF109E28</color>
+    <color name="piece_blue">#FF1438B8</color>
+    <color name="piece_purple">#FF651394</color>
+    <color name="piece_cyan">#FF1FA5DE</color>
+</resources>
