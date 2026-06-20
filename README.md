@@ -1,16 +1,13 @@
 # TileBlast
 
-> Block Puzzle Game untuk Android
+> Android Block Puzzle Game — Capstone Project
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](#)
 [![License](https://img.shields.io/badge/license-MIT-blue)](#license)
 [![Android API](https://img.shields.io/badge/API-24%2B-green)](#)
 [![Java](https://img.shields.io/badge/Java-17-orange)](#)
-
-![Gameplay](docs/screenshots/gameplay.png)
-![Power-Ups](docs/screenshots/powerups.png)
-![Daily Challenge](docs/screenshots/daily.png)
-![Themes](docs/screenshots/themes.png)
+[![Firebase](https://img.shields.io/badge/Firebase-Auth%20%2B%20Firestore-orange)](#)
+[![Platform](https://img.shields.io/badge/Platform-Android-3ddc84)](#)
 
 ---
 
@@ -27,6 +24,7 @@
   - [Level Progression & XP](#7-level-progression--xp)
   - [Timed Mode](#8-timed-mode)
   - [Themes & Customization](#9-themes--customization)
+  - [Online Leaderboard & Auth](#10-online-leaderboard--auth)
 - [Tech Stack](#tech-stack)
 - [Game Modes](#game-modes)
 - [Struktur Project](#struktur-project)
@@ -40,10 +38,11 @@
   - [Statistics Module](#statistics-module)
   - [Progression Module](#progression-module)
   - [Theme Module](#theme-module)
+  - [Leaderboard Module](#leaderboard-module)
 - [Build & Run](#build--run)
 - [Testing](#testing)
 - [Persistence Architecture](#persistence-architecture)
-- [Spec-Driven Development](#spec-driven-development)
+- [Metodologi Pengembangan](#metodologi-pengembangan)
 - [Roadmap / Future Work](#roadmap--future-work)
 - [Contributing](#contributing)
 - [License](#license)
@@ -53,21 +52,23 @@
 
 ## Tentang Project
 
-**TileBlast** adalah game block puzzle untuk Android yang terinspirasi dari
-Blockudoku dan 1010!. Pemain menempatkan tiga (atau lima) potongan dari
-"hand" ke papan grid, dan menghapus baris atau kolom yang terisi penuh
-untuk mendapatkan poin. Tantangannya adalah merencanakan penempatan
-sebelum kehabisan ruang.
+**TileBlast** adalah game block puzzle untuk Android yang dikembangkan sebagai
+**Capstone Project**, terinspirasi dari Blockudoku dan 1010!. Pemain menempatkan
+tiga (atau lima) potongan dari "hand" ke papan grid, dan menghapus baris atau
+kolom yang terisi penuh untuk mendapatkan poin. Tantangannya adalah merencanakan
+penempatan sebelum kehabisan ruang.
 
-Render board dan piece dilakukan sepenuhnya pada custom `Canvas` view
-(`GameView`) — tidak ada bitmap besar atau engine pihak ketiga. Fokus
-desain ada pada **juiciness**: particle effect, screen flash, zoom pulse,
-score pop, combo text, dan piece snap animation membuat setiap penempatan
-terasa memuaskan.
+Seluruh rendering board dan piece dilakukan via custom `Canvas` view (`GameView`)
+— tanpa bitmap besar maupun engine pihak ketiga. Fokus desain ada pada
+**juiciness dan game feel**: particle effect, screen flash, zoom pulse, score pop,
+combo text, dan piece snap animation membuat setiap penempatan terasa memuaskan.
 
-Project ini menonjol dengan **9 fitur utama** yang dibangun bertahap
-melalui spec-driven development, mulai dari sistem power-up, special
-tiles, sampai daily challenge yang seed-deterministic per tanggal.
+Project ini mengimplementasikan **9 fitur utama** secara bertahap, mulai dari
+visual feedback, ghost preview, sistem power-up dan special tiles, daily challenge
+yang seed-deterministic, hingga leaderboard online berbasis Firebase Firestore.
+Semua fitur dirancang dengan mempertimbangkan kualitas kode: zero-allocation
+render path, persistence yang corruption-resilient, dan state machine yang
+testable.
 
 ---
 
@@ -269,6 +270,15 @@ direset manual), aktivasi otomatis fallback ke DEFAULT.
 | DARK / SPACE | 50,000          | palette / skin |
 | OCEAN / PIXEL_ART | 100,000    | palette / skin |
 
+### 10. Online Leaderboard & Auth
+
+Pemain dapat melihat skor terbaik secara global melalui **Online Leaderboard** yang didukung oleh Firebase Firestore. Tersedia sistem otentikasi ganda:
+
+- **Anonymous Sign-In**: Login otomatis sebagai guest (mis. "Player1234") sehingga pemain bisa langsung bermain.
+- **Google Sign-In**: Menghubungkan akun anonymous ke akun Google agar data skor tersimpan aman melintasi perangkat.
+
+Skor disubmit secara cerdas: hanya jika memecahkan *personal best* untuk mode tersebut. Terdapat sistem offline-queueing `ScoreQueue` yang akan menampung skor apabila device sedang tidak terhubung internet, dan otomatis melakukan sinkronisasi ke Firestore ketika koneksi kembali.
+
 ---
 
 ## Tech Stack
@@ -278,6 +288,7 @@ direset manual), aktivasi otomatis fallback ke DEFAULT.
 - **Build**: Gradle Kotlin DSL (`build.gradle.kts`)
 - **Rendering**: Custom `Canvas` view (no engine pihak ketiga)
 - **Audio**: `SoundPool` (max 6 streams, USAGE_GAME)
+- **Backend**: Firebase Authentication & Cloud Firestore (Leaderboard)
 - **Persistence**: `SharedPreferences` + JSON untuk struktur kompleks
 - **Property-Based Testing**: [jqwik](https://jqwik.net) 1.8.5
 - **Unit Testing**: JUnit 5 (Jupiter) + JUnit 4 (legacy compat) + Mockito
@@ -356,6 +367,12 @@ TileBlast/
 │           │   │   ├── AchievementDef.java
 │           │   │   ├── AchievementManager.java
 │           │   │   └── StatisticsManager.java
+│           │   ├── leaderboard/
+│           │   │   ├── AuthManager.java
+│           │   │   ├── LeaderboardAdapter.java
+│           │   │   ├── LeaderboardEntry.java
+│           │   │   ├── LeaderboardService.java
+│           │   │   └── ScoreQueue.java
 │           │   ├── storage/
 │           │   │   └── StorageManager.java
 │           │   └── theme/
@@ -445,6 +462,24 @@ baru terakhir handle pause/exit.
 |-----------|-----------|
 | `onCreate(Bundle)` | Bind 4 `LinearLayout` per mode dan populate via `populateScores` |
 | `populateScores(LinearLayout, List<HighScore>, Typeface)` | Render row "#1  10,000 pts • 15 Mar 2025"; rank 1 di-highlight emas |
+
+---
+
+#### `LeaderboardActivity.java`
+
+**Lokasi:** `app/src/main/java/com/allan/tileblast/LeaderboardActivity.java`
+**Tujuan:** Menampilkan global leaderboard dengan lima tab game-mode dan toggle All-Time / Weekly. Menggunakan Firestore snapshot listener untuk update data secara real-time. Menangani flow otentikasi UI (Google Sign-In, ubah nama).
+**Dependencies:** `LeaderboardService`, `AuthManager`, `LeaderboardAdapter`
+
+#### Methods
+
+| Signature | Deskripsi |
+|-----------|-----------|
+| `onCreate(Bundle)` | Bind UI elements, initialize RecyclerView, TabLayout, ToggleGroup, dan attach event listener. |
+| `loadLeaderboard()` | Re-attach snapshot listener Firestore sesuai mode dan filter (weekly/all-time) yang aktif. |
+| `updateAuthUi()` | Menampilkan status login (Anonymous / Google) dan display name pemain. |
+| `showEditNameDialog()` | Membuka dialog untuk pemain mengganti display name-nya (3-20 karakter). |
+| `onAuthButtonClicked()` | Memulai flow Google Sign-In atau Sign-Out bergantung pada status sesi saat ini. |
 
 ---
 
@@ -1758,6 +1793,35 @@ subtle.
 
 ---
 
+### Leaderboard Module
+
+#### `AuthManager.java`
+
+**Lokasi:** `app/src/main/java/com/allan/tileblast/leaderboard/AuthManager.java`
+**Tujuan:** Mengelola Firebase Authentication. Menangani *anonymous sign-in* saat aplikasi pertama kali dibuka, dan memungkinkan *linking* ke akun Google via `GoogleSignInClient`. Menyimpan auth state ke SharedPreferences.
+
+#### `LeaderboardAdapter.java`
+
+**Lokasi:** `app/src/main/java/com/allan/tileblast/leaderboard/LeaderboardAdapter.java`
+**Tujuan:** RecyclerView adapter untuk merender list skor. Memberikan highlight warna khusus pada baris skor yang merupakan milik pemain saat ini berdasarkan `userId`.
+
+#### `LeaderboardEntry.java`
+
+**Lokasi:** `app/src/main/java/com/allan/tileblast/leaderboard/LeaderboardEntry.java`
+**Tujuan:** Plain data class (POJO) untuk merepresentasikan satu baris leaderboard (userId, displayName, score, mode, timestamp).
+
+#### `LeaderboardService.java`
+
+**Lokasi:** `app/src/main/java/com/allan/tileblast/leaderboard/LeaderboardService.java`
+**Tujuan:** Top-level service untuk operasi Firestore: membaca skor top-100 (all-time & mingguan), submit skor (dengan gating personal-best dan rate limiting), menghitung ranking pemain, serta registrasi real-time listener.
+**Dependencies:** `FirebaseFirestore`, `AuthManager`, `ScoreQueue`
+
+#### `ScoreQueue.java`
+
+**Lokasi:** `app/src/main/java/com/allan/tileblast/leaderboard/ScoreQueue.java`
+**Tujuan:** Menyimpan skor ke dalam queue lokal (`SharedPreferences`) jika device sedang offline atau submit ke Firestore gagal. Dilengkapi dengan `ConnectivityManager.NetworkCallback` untuk otomatis mensinkronkan antrean saat jaringan internet kembali.
+
+---
 
 ## Build & Run
 
@@ -1917,64 +1981,47 @@ Beberapa rule restoration:
 
 ---
 
-## Spec-Driven Development
+## Metodologi Pengembangan
 
-Project ini dikembangkan dengan **spec-driven development** menggunakan
-folder `.kiro/specs/`. Setiap fitur/inisiatif punya folder dengan tiga
-artefak utama:
+Project ini dikembangkan menggunakan **pendekatan fitur bertahap** dengan
+prioritas berdasarkan dependency antar komponen. Setiap fitur didesain mulai
+dari requirements, diikuti technical design dan task breakdown, sebelum
+implementasi dilakukan.
 
-```
-.kiro/specs/<feature>/
-├── requirements.md   # User-facing requirements (Given/When/Then)
-├── design.md         # Technical design + invariants
-└── tasks.md          # Task list with PBT properties marked
-```
+### Tahapan Implementasi
 
-11 spec yang ada di repo:
+**Tahap 1 — Foundation:**
 
-1. `enhanced-visual-feedback` — particle, flash, zoom pulse
-2. `ghost-preview-hints` — ghost block + hint button
-3. `power-ups-system` — 4 power-up + state machine
-4. `special-tiles` — frozen, locked, bomb tiles
-5. `daily-challenge` — seed deterministic + streak + calendar
-6. `statistics-achievements` — 20 achievement + per-mode stats
-7. `level-progression-xp` — 100 level + prestige + reward
-8. `themes-customization` — palette + skin + unlock
-9. `timed-mode` — 60s/90s + multiplier band + time bonus
-10. `all-bugs-fix` — bugfix coordinator
-11. (satu spec lain di-skip dari dokumentasi public)
+- Enhanced visual feedback (particle, flash, zoom pulse)
+- Ghost preview & hint button
+- Timed Mode (60s/90s)
 
-### Dependency Graph & Waves
+**Tahap 2 — Core Mechanics:**
 
-Spec di-eksekusi dalam wave parallel berdasarkan dependency:
+- Power-Ups System (4 tipe + state machine)
+- Special Tiles (frozen, locked, bomb)
 
-**Wave 1** (foundation, no dependencies on each other):
+**Tahap 3 — Cross-Cutting Features:**
 
-- `enhanced-visual-feedback`
-- `ghost-preview-hints`
-- `timed-mode`
+- Statistics & Achievements (20 achievement + per-mode stats)
+- Level Progression & XP (100 level + prestige)
+- Themes & Customization (palette + skin + unlock)
 
-**Wave 2** (depend on Wave 1 score/effect hooks):
+**Tahap 4 — Fitur Composite:**
 
-- `power-ups-system` (perlu hook combo dari ScoreManager + effect dari EffectManager)
-- `special-tiles` (perlu Board state + scoring rule)
+- Daily Challenge (seed deterministic + streak + calendar)
+- Online Leaderboard (Firebase Auth + Firestore)
 
-**Wave 3** (cross-cutting):
+**Tahap 5 — Stabilisasi:**
 
-- `statistics-achievements` (consume event dari semua mode)
-- `level-progression-xp` (consume score+combo events)
-- `themes-customization` (consume cumulative score)
+- Bug fixes, edge case handling, dan UI polish
 
-**Wave 4** (composite features):
+### Prinsip Desain Kode
 
-- `daily-challenge` (depend on special-tiles + statistics + theme)
-
-**Wave 5** (final stabilization):
-
-- `all-bugs-fix`
-
-Setiap spec memiliki tasks yang ditandai PBT — task itu menulis property test
-sebelum implementation supaya invariant sudah explicit sebelum kode ditulis.
+- **Zero-allocation render path** — `ParticlePool` 512 slot, tidak ada heap alloc di hot path
+- **Corruption-resilient persistence** — semua JSON parser dibungkus try/catch, default safe
+- **Testable state machines** — `PowerUpManager`, `TimedModeController` didesain sebagai pure state machine tanpa Android dependency
+- **Property-Based Testing** — invariant algoritmik (combo decay, XP formula, hint scoring) diverifikasi dengan jqwik
 
 ---
 
@@ -1984,10 +2031,11 @@ sebelum implementation supaya invariant sudah explicit sebelum kode ditulis.
 - **Replay system** — record sequence placement, share/playback
 - **Custom theme editor** — user-created palette/skin via color picker
 - **More piece shapes** — pentomino, X-shape, plus shape
-- **Cloud save sync** — backup progress lintas device tanpa mengikat ke layanan tertentu
-- **Tutorial mode** — guided onboarding untuk first-time player
-- **Adaptive difficulty** — piece distribution adjust ke skill pemain
-- **Localization** — translate ke EN, ID, JA, ZH
+- **Cloud save sync** — backup progress lintas device via Firebase Storage
+- **Tutorial mode** — guided onboarding interaktif untuk first-time player
+- **Adaptive difficulty** — distribusi piece menyesuaikan skill pemain
+- **Push notifications** — reminder daily challenge via FCM
+- **Localization** — full i18n ke Bahasa Indonesia dan English
 
 ---
 
@@ -2012,20 +2060,14 @@ Kontribusi welcome! Workflow standar:
 - Javadoc untuk public API yang non-trivial
 - Hindari alokasi heap di hot path render (lihat pattern `ParticlePool`)
 
-### Spec-First untuk Fitur Baru
-
-Untuk fitur substansial, buat spec di `.kiro/specs/<feature>/` dulu (requirements +
-design + tasks) sebelum buka PR implementation. Ini membantu reviewer memahami
-intent sebelum baca kode.
-
 ---
 
 ## License
 
-MIT License — lihat [LICENSE](LICENSE) atau setting **TBD** bila belum dipublikasikan.
+MIT License.
 
 ```
-Copyright (c) 2025 Allan
+Copyright (c) 2026 Allan
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -2044,14 +2086,14 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, ...
 
 ## Credits
 
-- **Game Design & Engineering**: Allan
+- **Game Design, Engineering & Capstone**: Allan
 - **Inspirasi gameplay**: Blockudoku, 1010!, classic Tetris-style block puzzlers
 - **Font**: [Silkscreen](https://kottke.org/plus/type/silkscreen/) — pixel-style typeface
 - **Sound effects**: kustom + sample royalty-free
+- **Backend**: Firebase (Google) — Auth + Firestore
 - **PBT Library**: [jqwik](https://jqwik.net) by Johannes Link
 - **Testing framework**: JUnit 5 (Jupiter) + Mockito
-- **Spec-driven development**: powered by Kiro IDE
 
 ---
 
-> Dibuat dengan ❤️ untuk pemain block puzzle yang suka angka, pattern, dan juicy effects.
+> Dikembangkan sebagai Capstone Project — dibuat dengan ❤️ untuk pemain block puzzle yang suka angka, pattern, dan juicy effects.
